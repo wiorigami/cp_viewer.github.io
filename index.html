@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <link rel="icon" href="https://raw.githubusercontent.com/wiorigami/cp_viewer.github.io/0881edcfaeeb4dda567490d5e332b07fe3a95bcc/cp_viewer.ico" type="image/x-icon">
+    <link rel="icon" href="https://raw.githubusercontent.com/wiorigami/cp_viewer.github.io/refs/heads/main/pho/cp_viewer.ico" type="image/x-icon">
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>CP File Previewer</title>
@@ -48,8 +48,54 @@
             color: #333;
         }
     </style>
+    <style>
+        .switch {
+            position: relative;
+            display: inline-block;
+            width: 60px;
+            height: 34px;
+        }
+        .switch input {
+            opacity: 0;
+            width: 0;
+            height: 0;
+        }
+        .slider {
+            position: absolute;
+            cursor: pointer;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: #ccc;
+            transition: .4s;
+            border-radius: 34px;
+        }
+        .slider:before {
+            position: absolute;
+            content: "";
+            height: 26px;
+            width: 26px;
+            left: 4px;
+            bottom: 4px;
+            background-color: white;
+            transition: .4s;
+            border-radius: 50%;
+        }
+        input:checked + .slider {
+            background-color: #2196F3;
+        }
+        input:checked + .slider:before {
+            transform: translateX(26px);
+        }
+    </style>
 </head>
 <body>
+    <div style="color: red; font-size: 18px; text-align: center; margin-top: 10px;">建议QQ浏览器打开</div>
+    <label class="switch" style="position: fixed; bottom: 10px; left: 10px;">
+        <input type="checkbox" id="themeToggle">
+        <span class="slider"></span>
+    </label>
     <div style="color: red; font-size: 18px; text-align: center; margin-top: 10px;">建议QQ浏览器打开</div>
 
     <input type="file" id="fileInput" accept=".cp" style="display: none;">
@@ -147,5 +193,18 @@
         });
 
             </script>
+    
+
+    <script>
+        document.getElementById('themeToggle').addEventListener('change', function () {
+            if (this.checked) {
+                document.body.style.backgroundColor = '#333';
+                document.body.style.color = '#FFF';
+            } else {
+                document.body.style.backgroundColor = '#f0f0f0';
+                document.body.style.color = '#000';
+            }
+        });
+    </script>
 </body>
 </html>
