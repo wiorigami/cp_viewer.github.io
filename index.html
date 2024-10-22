@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CP File Previewer</title>
+    <style>
+        body {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            flex-direction: column;
+            height: 100vh;
+            margin: 0;
+            background-color: #f0f0f0;
+            font-family: Arial, sans-serif;
+            background-image: url('https://github.com/wiorigami/origami-apps/blob/main/cp_viewer.html');
+            background-position: center;
+            background-repeat: no-repeat;
+            background-size: cover; /* Ensures background fills the entire screen */
+        }
+        #selectButton, #saveButton {
+            padding: 15px 25px;
+            font-size: 18px;
+            border: none;
+            border-radius: 5px;
+            background-color: #007BFF;
+            color: white;
+            cursor: pointer;
+            touch-action: manipulation;
+            margin-top: 10px;
+        }
+        #saveButton {
+            background-color: #28A745;
+        }
+        #selectButton:active, #saveButton:active {
+            transform: scale(0.98);
+        }
+        svg {
+            max-width: 100%;
+            height: auto;
+            margin-top: 20px;
+            display: block;
+            margin-left: auto;
+            margin-right: auto;
+        }
+        #fileName {
+            font-size: 20px;
+            font-weight: bold;
+            margin-top: 20px;
+            color: #333;
+        }
+    </style>
+</head>
+<body>
+    <div style="color: red; font-size: 18px; text-align: center; margin-top: 10px;">建议QQ浏览器打开</div>
+
+    <input type="file" id="fileInput" accept=".cp" style="display: none;">
+    <label for="fileInput" id="selectButton" style="cursor: pointer;">选择文件</label>
+    <div id="fileName"></div>
+    <div id="buttonContainer" style="display: none;">
+        <button id="saveButton">另存为SVG</button>
+    </div>
+    <div id="previewContainer" style="display: none;"></div>
+
+    <script>
+        let currentFileName = "";
+
+        document.getElementById('fileInput').addEventListener('change', function (event) {
+            const file = event.target.files[0];
+            if (file) {
+                // Store the current file name
+                currentFileName = file.name.replace(/\.[^/.]+$/, ""); // Remove the extension from the filename
+
+                // Display the file name
+                document.getElementById('fileName').textContent = `已选择文件: ${file.name}`;
+                // Show the save buttons
+                document.getElementById('buttonContainer').style.display = 'block';
+                // Hide the select button and show the SVG preview and save buttons
+                document.getElementById('selectButton').style.display = 'none';
+                const reader = new FileReader();
+
+                reader.onload = function (e) {
+                    const content = e.target.result;
+                    const lines = content.split('\n');
+                    let minX = Infinity, minY = Infinity, maxX = -Infinity, maxY = -Infinity;
+                    let svgContent = `<svg id="svgPreview" xmlns="http://www.w3.org/2000/svg">`;
+
+                    // Parse the .cp file and generate SVG lines
+                    lines.forEach(line => {
+                        if (line.trim() !== "") {
+                            const parts = line.trim().split(/\s+/);
+                            if (parts.length === 5) {
+                                const type = parseInt(parts[0]);
+                                const x1 = parseFloat(parts[1]);
+                                const y1 = parseFloat(parts[2]);
+                                const x2 = parseFloat(parts[3]);
+                                const y2 = parseFloat(parts[4]);
+
+                                // Update bounding box
+                                minX = Math.min(minX, x1, x2);
+                                minY = Math.min(minY, y1, y2);
+                                maxX = Math.max(maxX, x1, x2);
+                                maxY = Math.max(maxY, y1, y2);
+
+                                // Map type to color
+                                let color = "#000000"; // Default color is black
+                                if (type === 1) {
+                                    color = "#000000"; // Edge (black)
+                                } else if (type === 2) {
+                                    color = "#FF0000"; // Mountain fold (red)
+                                } else if (type === 3) {
+                                    color = "#0000FF"; // Valley fold (blue)
+                                } else if (type === 4) {
+                                    color = "#64C8C8"; // Auxiliary line (cyan)
+                                }
+
+                                svgContent += `<line x1="${x1}" y1="${y1}" x2="${x2}" y2="${y2}" stroke="${color}" stroke-width="1" />`;
+                            }
+                        }
+                    });
+
+                    svgContent += `</svg>`;
+                    const svgContainer = document.getElementById('previewContainer');
+                    svgContainer.innerHTML = `<div id="fileName">已选择文件: ${file.name}</div>` + svgContent;
+                    svgContainer.style.display = 'block';
+
+                    // Set viewBox to properly center the content
+                    const svgElement = document.getElementById('svgPreview');
+                    if (minX !== Infinity && minY !== Infinity && maxX !== -Infinity && maxY !== -Infinity) {
+                        const width = maxX - minX;
+                        const height = maxY - minY;
+                        svgElement.setAttribute('viewBox', `${minX} ${minY} ${width} ${height}`);
+                    }
+                };
+                reader.readAsText(file);
+            }
+        });
+
+        document.getElementById('saveButton').addEventListener('click', function () {
+            const svgElement = document.getElementById('svgPreview');
+            if (svgElement) {
+                const svgData = new XMLSerializer().serializeToString(svgElement);
+                const svgBlob = new Blob([svgData], { type: 'image/svg+xml;charset=utf-8' });
+                const link = document.createElement('a');
+                link.href = URL.createObjectURL(svgBlob);
+                link.download = `${currentFileName}.svg`;
+                link.click();
+            }
+        });
+    </script>
+</body>
+</html>
