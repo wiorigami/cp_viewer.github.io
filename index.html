@@ -91,18 +91,18 @@
     </style>
 </head>
 <body>
-    <div style="color: red; font-size: 18px; text-align: center; margin-top: 10px;">建议QQ浏览器打开</div>
+    <div style="color: red; font-size: 18px; text-align: center; margin-top: 10px;"></div>
     <label class="switch" style="position: fixed; bottom: 10px; left: 10px;">
         <input type="checkbox" id="themeToggle">
         <span class="slider"></span>
     </label>
-    <div style="color: red; font-size: 18px; text-align: center; margin-top: 10px;">建议QQ浏览器打开</div>
+    <div style="color: red; font-size: 18px; text-align: center; margin-top: 10px;">.cp viewer</div>
 
     <input type="file" id="fileInput" accept=".cp" style="display: none;">
-    <label for="fileInput" id="selectButton" style="cursor: pointer;">选择文件</label>
+    <label for="fileInput" id="selectButton" style="cursor: pointer;">select files</label>
     <div id="fileName"></div>
     <div id="buttonContainer" style="display: none;">
-        <button id="saveButton">另存为SVG</button>
+        <button id="saveButton">Export SVG</button>
             </div>
     <div id="previewContainer" style="display: none;"></div>
 
@@ -116,7 +116,7 @@
                 currentFileName = file.name.replace(/\.[^/.]+$/, ""); // Remove the extension from the filename
 
                 // Display the file name
-                document.getElementById('fileName').textContent = `已选择文件: ${file.name}`;
+                document.getElementById('fileName').textContent = `selected: ${file.name}`;
                 // Show the save buttons
                 document.getElementById('buttonContainer').style.display = 'block';
                 // Hide the select button and show the SVG preview and save buttons
@@ -165,7 +165,7 @@
 
                     svgContent += `</svg>`;
                     const svgContainer = document.getElementById('previewContainer');
-                    svgContainer.innerHTML = `<div id="fileName">已选择文件: ${file.name}</div>` + svgContent;
+                    svgContainer.innerHTML = `<div id="fileName">selected: ${file.name}</div>` + svgContent;
                     svgContainer.style.display = 'block';
 
                     // Set viewBox to properly center the content
