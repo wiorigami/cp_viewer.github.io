@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <link rel="icon" href="https://raw.githubusercontent.com/wiorigami/cp_viewer.github.io/refs/heads/main/pho/ico.ico" type="image/x-icon">
+    <link rel="icon" href="https://raw.githubusercontent.com/wiorigami/cp_viewer.github.io/refs/heads/main/pho/cp_viewer.ico" type="image/x-icon">
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>CP File Previewer</title>
@@ -16,7 +16,7 @@
             background-color: #f0f0f0;
             font-family: Arial, sans-serif;
         }
-        #selectButton, #saveButton {
+        #selectButton, #saveButton, #savePngButton {
             padding: 15px 25px;
             font-size: 18px;
             border: none;
@@ -30,7 +30,10 @@
         #saveButton {
             background-color: #28A745;
         }
-                #selectButton:active, #saveButton:active, #savePngButton:active {
+        #savePngButton {
+            background-color: #FF6347;
+        }
+        #selectButton:active, #saveButton:active, #savePngButton:active {
             transform: scale(0.98);
         }
         svg {
@@ -103,7 +106,8 @@
     <div id="fileName"></div>
     <div id="buttonContainer" style="display: none;">
         <button id="saveButton">Export SVG</button>
-            </div>
+        <button id="savePngButton">Export PNG</button>
+    </div>
     <div id="previewContainer" style="display: none;"></div>
 
     <script>
@@ -192,8 +196,29 @@
             }
         });
 
-            </script>
-    
+        document.getElementById('savePngButton').addEventListener('click', function () {
+            const svgElement = document.getElementById('svgPreview');
+            if (svgElement) {
+                const svgData = new XMLSerializer().serializeToString(svgElement);
+                const canvas = document.createElement('canvas');
+                const boundingBox = svgElement.viewBox.baseVal;
+                canvas.width = boundingBox.width;
+                canvas.height = boundingBox.height;
+                const ctx = canvas.getContext('2d');
+                const img = new Image();
+                img.onload = function () {
+                    ctx.drawImage(img, 0, 0);
+                    const pngBlob = canvas.toDataURL('image/png');
+                    const link = document.createElement('a');
+                    link.href = pngBlob;
+                    link.download = `${currentFileName}.png`;
+                    link.click();
+                };
+                img.src = 'data:image/svg+xml;base64,' + btoa(unescape(encodeURIComponent(svgData)));
+            }
+        });
+
+    </script>
 
     <script>
         document.getElementById('themeToggle').addEventListener('change', function () {
