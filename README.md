@@ -7,7 +7,7 @@ to view and export .cp files as PNG or SVG. This Software is also originally wri
 ![cp_viewer Screen](https://raw.githubusercontent.com/wiorigami/cp_viewer.github.io/refs/heads/main/pho/page.png)
 - Go to [cp_viewer](https://wiorigami.github.io/cp_viewer.github.io/).
   - Tested to run in any Web Browser.
-- You can download [sample file](https://github.com/wiorigami/cp_viewer.github.io/tree/main/samples).
+- You can download [sample files](https://github.com/wiorigami/cp_viewer.github.io/tree/main/samples).
   - Press "select files" to upload a .cp file.
   - The cp will show as preview on the page.
 - "Dark mode"
