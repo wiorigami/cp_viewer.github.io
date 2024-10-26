@@ -60,8 +60,6 @@
             margin-top: 20px;
             color: #333;
         }
-    </style>
-    <style>
         .switch {
             position: relative;
             display: inline-block;
@@ -101,6 +99,17 @@
         input:checked + .slider:before {
             transform: translateX(26px);
         }
+        #readmeLink {
+            position: fixed;
+            bottom: 10px;
+            right: 10px;
+            font-size: 16px;
+            color: #007BFF;
+            text-decoration: none;
+        }
+        #readmeLink:hover {
+            text-decoration: underline;
+        }
     </style>
 </head>
 <body>
@@ -120,6 +129,8 @@
         <button id="saveJpgButton">Export JPG</button>
     </div>
     <div id="previewContainer" style="display: none;"></div>
+
+    <a href="data:text/markdown,# cp file viewer: A cp file viewer&converter on any device%0A%0A![web icon](https://github.com/wiorigami/cp_viewer.github.io/blob/main/pho/ico.png?raw=true)%0Acp file viewer is software written by wi to view and export .cp files as PNG or SVG. This Software is also originally written by wi.%0A%0A## How to use%0A![cp_viewer Screen](https://raw.githubusercontent.com/wiorigami/cp_viewer.github.io/refs/heads/main/pho/page.png)%0A- Go to [cp_viewer](https://wiorigami.github.io/cp_viewer.github.io/).%0A  - Tested to run in any Web Browser.%0A- You can download [sample file](https://github.com/wiorigami/cp_viewer.github.io/tree/main/samples).%0A  - Press 'select files' to upload a .cp file.%0A  - The cp will show as preview on the page.%0A- 'Dark mode'%0A  - Press the button at the corner to switch to dark mode. Default settings are set to light mode.%0A![page](https://raw.githubusercontent.com/wiorigami/cp_viewer.github.io/refs/heads/main/pho/screen.png)%0A%0A## Web screen shot%0A![cp_viewer Screen](https://raw.githubusercontent.com/wiorigami/cp_viewer.github.io/refs/heads/main/pho/web%20screen.png)%0A![cp_viewer Screen](https://raw.githubusercontent.com/wiorigami/cp_viewer.github.io/refs/heads/main/pho/page.png)" id="readmeLink" target="_blank">README</a>
 
     <script>
         let currentFileName = "";
@@ -241,9 +252,7 @@
                 img.src = 'data:image/svg+xml;base64,' + btoa(unescape(encodeURIComponent(svgData)));
             }
         });
-    </script>
 
-    <script>
         document.getElementById('themeToggle').addEventListener('change', function () {
             if (this.checked) {
                 document.body.style.backgroundColor = '#333';
