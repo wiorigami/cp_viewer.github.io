@@ -1,10 +1,13 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <link rel="icon" href="https://raw.githubusercontent.com/wiorigami/cp_viewer.github.io/refs/heads/main/pho/ico.ico" type="image/x-icon">
+    <link rel="icon" href="https://raw.githubusercontent.com/wiorigami/cp_viewer.github.io/refs/heads/main/pho/cp_viewer.ico" type="image/x-icon">
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>CP File Previewer</title>
+    <!-- 添加以下 meta 标签实现 iOS 设备主屏幕全屏显示 -->
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <style>
         body {
             display: flex;
@@ -16,7 +19,7 @@
             background-color: #f0f0f0;
             font-family: Arial, sans-serif;
         }
-        #selectButton, #saveButton, #savePngButton {
+        #selectButton, #saveButton, #savePngButton, #saveJpgButton {
             padding: 15px 25px;
             font-size: 18px;
             border: none;
@@ -33,7 +36,10 @@
         #savePngButton {
             background-color: #FF6347;
         }
-        #selectButton:active, #saveButton:active, #savePngButton:active {
+        #saveJpgButton {
+            background-color: #FFA500;
+        }
+        #selectButton:active, #saveButton:active, #savePngButton:active, #saveJpgButton:active {
             transform: scale(0.98);
         }
         svg {
@@ -50,8 +56,6 @@
             margin-top: 20px;
             color: #333;
         }
-    </style>
-    <style>
         .switch {
             position: relative;
             display: inline-block;
@@ -99,7 +103,7 @@
         <input type="checkbox" id="themeToggle">
         <span class="slider"></span>
     </label>
-    <div style="color: red; font-size: 18px; text-align: center; margin-top: 10px;">.cp viewer & converter</div>
+    <div style="color: red; font-size: 18px; text-align: center; margin-top: 10px;">.cp viewer</div>
 
     <input type="file" id="fileInput" accept=".cp" style="display: none;">
     <label for="fileInput" id="selectButton" style="cursor: pointer;">select files</label>
@@ -107,6 +111,7 @@
     <div id="buttonContainer" style="display: none;">
         <button id="saveButton">Export SVG</button>
         <button id="savePngButton">Export PNG</button>
+        <button id="saveJpgButton">Export JPG</button>
     </div>
     <div id="previewContainer" style="display: none;"></div>
 
@@ -218,6 +223,27 @@
             }
         });
 
+        document.getElementById('saveJpgButton').addEventListener('click', function () {
+            const svgElement = document.getElementById('svgPreview');
+            if (svgElement) {
+                const svgData = new XMLSerializer().serializeToString(svgElement);
+                const canvas = document.createElement('canvas');
+                const boundingBox = svgElement.viewBox.baseVal;
+                canvas.width = boundingBox.width;
+                canvas.height = boundingBox.height;
+                const ctx = canvas.getContext('2d');
+                const img = new Image();
+                img.onload = function () {
+                    ctx.drawImage(img, 0, 0);
+                    const jpgBlob = canvas.toDataURL('image/jpeg', 0.8);
+                    const link = document.createElement('a');
+                    link.href = jpgBlob;
+                    link.download = `${currentFileName}.jpg`;
+                    link.click();
+                };
+                img.src = 'data:image/svg+xml;base64,' + btoa(unescape(encodeURIComponent(svgData)));
+            }
+        });
     </script>
 
     <script>
@@ -225,11 +251,10 @@
             if (this.checked) {
                 document.body.style.backgroundColor = '#333';
                 document.body.style.color = '#FFF';
+                document.querySelectorAll('line[stroke="#000000"]').forEach(line => {
+                    line.setAttribute('stroke', '#FFFFFF');
+                });
             } else {
                 document.body.style.backgroundColor = '#f0f0f0';
                 document.body.style.color = '#000';
-            }
-        });
-    </script>
-</body>
-</html>
+                document.q
