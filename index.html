@@ -2,15 +2,15 @@
 <html lang="en">
 <head>
     <!-- 通过链接引用图标 -->
-    <link rel="apple-touch-icon" href="https://raw.githubusercontent.com/wiorigami/cp_viewer.github.io/refs/heads/main/pho/ico.png">
-
+    <link rel="apple-touch-icon" href="https://raw.githubusercontent.com/wiorigami/cp_viewer.github.io/refs/heads/main/pho/ico.png&#34;&gt;         
+    
     <!-- 必要的Meta标签，确保添加到主屏幕后全屏显示 -->
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <meta name="apple-mobile-web-app-title" content="CP File Previewer">
-
+    
     <title>CP File Previewer</title>
     <style>
         body {
@@ -34,45 +34,11 @@
             touch-action: manipulation;
             margin-top: 10px;
         }
-        #saveButton { background-color: #28A745; }
-        #savePngButton { background-color: #FF6347; }
-        #saveJpgButton { background-color: #FFA500; }
-    </style>
-</head>
-<body>
-    <button id="selectButton">选择文件</button>
-    <button id="saveButton">保存</button>
-    <button id="savePngButton">保存 PNG</button>
-    <button id="saveJpgButton">保存 JPG</button>
-
-    <script>
-        // 这里假设已经有选取文件和展示图片的逻辑
-        let canvas = document.createElement('canvas');
-        let ctx = canvas.getContext('2d');
-
-        function downloadImage(format) {
-            let image = new Image();
-            image.src = 'path/to/your/image'; // 替换成你的图片地址
-
-            image.onload = function() {
-                canvas.width = 2000; // 设置画布宽度
-                canvas.height = 2000; // 设置画布高度
-                ctx.drawImage(image, 0, 0, 2000, 2000); // 绘制到画布，调整尺寸
-
-                let link = document.createElement('a');
-                link.download = `downloaded_image.${format}`; // 文件名
-                link.href = canvas.toDataURL(`image/${format}`); // 转换为 Data URL
-                link.click(); // 触发下载
-            };
+        #saveButton {
+            background-color: #28A745;
         }
-
-        document.getElementById('savePngButton').onclick = function() {
-            downloadImage('png');
-        };
-
-        document.getElementById('saveJpgButton').onclick = function() {
-            downloadImage('jpeg');
-        };
-    </script>
-</body>
-</html>
+        #savePngButton {
+            background-color: #FF6347;
+        }
+        #saveJpgButton {
+            background-color: #FFA500;
