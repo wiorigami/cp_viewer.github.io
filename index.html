@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <!-- 通过链接引用图标 -->
-    <link rel="apple-touch-icon" href="https://raw.githubusercontent.com/wiorigami/cp_viewer.github.io/refs/heads/main/pho/ico.png&#34;&gt;         
+    <link rel="apple-touch-icon" href="https://raw.githubusercontent.com/wiorigami/cp_viewer.github.io/refs/heads/main/pho/ico.png">
     
     <!-- 必要的Meta标签，确保添加到主屏幕后全屏显示 -->
     <meta charset="UTF-8">
@@ -42,3 +42,232 @@
         }
         #saveJpgButton {
             background-color: #FFA500;
+        }
+        #selectButton:active, #saveButton:active, #savePngButton:active, #saveJpgButton:active {
+            transform: scale(0.98);
+        }
+        svg {
+            max-width: 100%;
+            height: auto;
+            margin-top: 20px;
+            display: block;
+            margin-left: auto;
+            margin-right: auto;
+        }
+        #fileName {
+            font-size: 20px;
+            font-weight: bold;
+            margin-top: 20px;
+            color: #333;
+        }
+        .switch {
+            position: relative;
+            display: inline-block;
+            width: 60px;
+            height: 34px;
+        }
+        .switch input {
+            opacity: 0;
+            width: 0;
+            height: 0;
+        }
+        .slider {
+            position: absolute;
+            cursor: pointer;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: #ccc;
+            transition: .4s;
+            border-radius: 34px;
+        }
+        .slider:before {
+            position: absolute;
+            content: "";
+            height: 26px;
+            width: 26px;
+            left: 4px;
+            bottom: 4px;
+            background-color: white;
+            transition: .4s;
+            border-radius: 50%;
+        }
+        input:checked + .slider {
+            background-color: #2196F3;
+        }
+        input:checked + .slider:before {
+            transform: translateX(26px);
+        }
+        #readmeLink {
+            position: fixed;
+            bottom: 10px;
+            right: 10px;
+            font-size: 16px;
+            color: #007BFF;
+            text-decoration: none;
+        }
+        #readmeLink:hover {
+            text-decoration: underline;
+        }
+    </style>
+</head>
+<body>
+    <div style="color: red; font-size: 18px; text-align: center; margin-top: 10px;"></div>
+    <label class="switch" style="position: fixed; bottom: 10px; left: 10px;">
+        <input type="checkbox" id="themeToggle">
+        <span class="slider"></span>
+    </label>
+    <div style="color: red; font-size: 18px; text-align: center; margin-top: 10px;">.cp viewer</div>
+
+    <input type="file" id="fileInput" accept=".cp" style="display: none;">
+    <label for="fileInput" id="selectButton" style="cursor: pointer;">select files</label>
+    <div id="fileName"></div>
+    <div id="buttonContainer" style="display: none;">
+        <button id="saveButton">Export SVG</button>
+        <button id="savePngButton">Export PNG</button>
+        <button id="saveJpgButton">Export JPG</button>
+    </div>
+    <div id="previewContainer" style="display: none;"></div>
+
+    <a href="https://github.com/wiorigami/cp_viewer.github.io/blob/main/README.md" id="readmeLink" target="_blank">README</a>
+
+    <script>
+        let currentFileName = "";
+
+        document.getElementById('fileInput').addEventListener('change', function (event) {
+            const file = event.target.files[0];
+            if (file) {
+                currentFileName = file.name.replace(/\.[^/.]+$/, "");
+                document.getElementById('fileName').textContent = `selected: ${file.name}`;
+                document.getElementById('buttonContainer').style.display = 'block';
+                document.getElementById('selectButton').style.display = 'none';
+                const reader = new FileReader();
+
+                reader.onload = function (e) {
+                    const content = e.target.result;
+                    const lines = content.split('\n');
+                    let minX = Infinity, minY = Infinity, maxX = -Infinity, maxY = -Infinity;
+                    let svgContent = `<svg id="svgPreview" xmlns="http://www.w3.org/2000/svg">`;
+
+                    lines.forEach(line => {
+                        if (line.trim() !== "") {
+                            const parts = line.trim().split(/\s+/);
+                            if (parts.length === 5) {
+                                const type = parseInt(parts[0]);
+                                const x1 = parseFloat(parts[1]);
+                                const y1 = parseFloat(parts[2]);
+                                const x2 = parseFloat(parts[3]);
+                                const y2 = parseFloat(parts[4]);
+
+                                minX = Math.min(minX, x1, x2);
+                                minY = Math.min(minY, y1, y2);
+                                maxX = Math.max(maxX, x1, x2);
+                                maxY = Math.max(maxY, y1, y2);
+
+                                let color = "#000000";
+                                if (type === 1) {
+                                    color = "#000000";
+                                } else if (type === 2) {
+                                    color = "#FF0000";
+                                } else if (type === 3) {
+                                    color = "#0000FF";
+                                } else if (type === 4) {
+                                    color = "#64C8C8";
+                                }
+
+                                svgContent += `<line x1="${x1}" y1="${y1}" x2="${x2}" y2="${y2}" stroke="${color}" stroke-width="1" />`;
+                            }
+                        }
+                    });
+
+                    svgContent += `</svg>`;
+                    const svgContainer = document.getElementById('previewContainer');
+                    svgContainer.innerHTML = `<div id="fileName">selected: ${file.name}</div>` + svgContent;
+                    svgContainer.style.display = 'block';
+
+                    const svgElement = document.getElementById('svgPreview');
+                    if (minX !== Infinity && minY !== Infinity && maxX !== -Infinity && maxY !== -Infinity) {
+                        const width = maxX - minX;
+                        const height = maxY - minY;
+                        svgElement.setAttribute('viewBox', `${minX} ${minY} ${width} ${height}`);
+                    }
+                };
+                reader.readAsText(file);
+            }
+        });
+
+        document.getElementById('saveButton').addEventListener('click', function () {
+            const svgElement = document.getElementById('svgPreview');
+            if (svgElement) {
+                const svgData = new XMLSerializer().serializeToString(svgElement);
+                const svgBlob = new Blob([svgData], { type: 'image/svg+xml;charset=utf-8' });
+                const link = document.createElement('a');
+                link.href = URL.createObjectURL(svgBlob);
+                link.download = `${currentFileName}.svg`;
+                link.click();
+            }
+        });
+
+        document.getElementById('savePngButton').addEventListener('click', function () {
+            const svgElement = document.getElementById('svgPreview');
+            if (svgElement) {
+                const svgData = new XMLSerializer().serializeToString(svgElement);
+                const canvas = document.createElement('canvas');
+                const boundingBox = svgElement.viewBox.baseVal;
+                canvas.width = boundingBox.width;
+                canvas.height = boundingBox.height;
+                const ctx = canvas.getContext('2d');
+                const img = new Image();
+                img.onload = function () {
+                    ctx.drawImage(img, 0, 0);
+                    const pngBlob = canvas.toDataURL('image/png');
+                    const link = document.createElement('a');
+                    link.href = pngBlob;
+                    link.download = `${currentFileName}.png`;
+                    link.click();
+                };
+                img.src = 'data:image/svg+xml;base64,' + btoa(unescape(encodeURIComponent(svgData)));
+            }
+        });
+
+        document.getElementById('saveJpgButton').addEventListener('click', function () {
+            const svgElement = document.getElementById('svgPreview');
+            if (svgElement) {
+                const svgData = new XMLSerializer().serializeToString(svgElement);
+                const canvas = document.createElement('canvas');
+                const boundingBox = svgElement.viewBox.baseVal;
+                canvas.width = boundingBox.width;
+                canvas.height = boundingBox.height;
+                const ctx = canvas.getContext('2d');
+                const img = new Image();
+                img.onload = function () {
+                    ctx.drawImage(img, 0, 0);
+                    const jpgBlob = canvas.toDataURL('image/jpeg', 0.8);
+                    const link = document.createElement('a');
+                    link.href = jpgBlob;
+                    link.download = `${currentFileName}.jpg`;
+                    link.click();
+                };
+                img.src = 'data:image/svg+xml;base64,' + btoa(unescape(encodeURIComponent(svgData)));
+            }
+        });
+
+        document.getElementById('themeToggle').addEventListener('change', function () {
+            if (this.checked) {
+                document.body.style.backgroundColor = '#333';
+                document.body.style.color = '#FFF';
+                document.querySelectorAll('line[stroke="#000000"]').forEach(line => {
+                    line.setAttribute('stroke', '#FFFFFF');
+                });
+            } else {
+                document.body.style.backgroundColor = '#f0f0f0';
+                document.body.style.color = '#000';
+                document.querySelectorAll('line[stroke="#FFFFFF"]').forEach(line => {
+                    line.setAttribute('stroke', '#000000');
+                });
+            }
+        });
+    </script>
+</body>
+</html>
