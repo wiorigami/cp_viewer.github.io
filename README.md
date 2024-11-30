@@ -11,7 +11,7 @@ to view and export .cp files as PNG or SVG. This Software is also originally wri
   - Press "select files" to upload a .cp file.
   - The cp will show as preview on the page.
 - "Dark mode"
-  - Press the button at the corner to switch to dark mode. Default settings are set to light mode.
+  - web will automatically detect system color to switch to dark/light mode 
 ![page](https://raw.githubusercontent.com/wiorigami/cp_viewer.github.io/refs/heads/main/pho/screen.png)
 
 ## Web screen shot
