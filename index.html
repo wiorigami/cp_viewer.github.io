@@ -69,7 +69,6 @@
             font-size: 20px;
             font-weight: bold;
             margin-top: 20px;
-            color: #333;
         }
         
         #readmeLink {
@@ -91,6 +90,10 @@
             color: #000;
         }
         
+        #fileName {
+            color: #000;
+        }
+        
         /* 深色模式样式 */
         @media (prefers-color-scheme: dark) {
             body {
@@ -98,10 +101,13 @@
                 color: #FFF;
             }
         
-            line[stroke="#00000
-          0"] {
+            #fileName {
+                color: #FFF;
+            }
+        
+            /* 确保线条颜色在深色模式下可见 */
+            line[stroke="#000000"] {
                 stroke: #FFFFFF;
-          
             }
         }
     </style>
